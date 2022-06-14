@@ -20,7 +20,8 @@ fun MessageEntity.convertToMessages() : Messages{
         description = description,
         image = image,
         title = title,
-        unread = unread
+        unread = unread,
+        saved = saved
     )
 }
 
@@ -30,7 +31,8 @@ fun Messages.toMessageEntity():MessageEntity{
         id_message = id,
         image = image,
         title = title,
-        unread = unread
+        unread = unread,
+        saved = saved
     )
 }
 fun MessagesDto.toMessageEntity() :MessageEntity {

@@ -2,7 +2,11 @@ package com.example.messageappebcom.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val gray_background = Color(0xFFF5F5F5)
+val gray_dark_background = Color(0xFFF0F3F6)
+val latablue_light = Color(0xFFCFF5FF)
+val lateblue_dark = Color(0xFF1FBEDC)
+val orange_dark = Color(0xFFFF8800)
+val red_background = Color(0xFFEE6A6A)
+val font_gray = Color(0xFF80838B)
+

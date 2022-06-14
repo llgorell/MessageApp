@@ -5,5 +5,6 @@ data class Messages(
     val id: String,
     val image: String?="",
     val title: String,
-    val unread: Boolean
+    val unread: Boolean,
+    val saved : Boolean = false
 )
