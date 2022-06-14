@@ -23,12 +23,16 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.core.content.res.ResourcesCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.messageappebcom.R
+import com.example.messageappebcom.data.mapper.convertToEntitySaved
 import com.example.messageappebcom.domain.model.Messages
 import com.example.messageappebcom.util.ComponentState
 import com.skydoves.landscapist.ShimmerParams
@@ -39,12 +43,14 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun MessageItem(data: Messages) {
+fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
     var expandableState by remember { mutableStateOf(false) }
+    var state = viewModel.state
     val rotationState by animateFloatAsState(
         targetValue = if (expandableState) 180f else 0f
     )
     var deleteState by remember { mutableStateOf(false) }
+    var saveMessageState by remember{mutableStateOf(data.saved)}
     var visibaleCheckbox by remember { mutableStateOf(false) }
     var isVisibility by remember { mutableStateOf(!data.image.isNullOrEmpty()) }
     var toState by remember { mutableStateOf(ComponentState.Released) }
@@ -85,7 +91,7 @@ fun MessageItem(data: Messages) {
                         .combinedClickable(
                             onLongClick = {
                                 visibaleCheckbox = !visibaleCheckbox
-                                          toState = ComponentState.Pressed
+                                toState = ComponentState.Pressed
 
                             }, onClick = {
                                 toState = ComponentState.Released
@@ -139,14 +145,25 @@ fun MessageItem(data: Messages) {
                             )
 
 
-                            Image(imageVector = Icons.Filled.BookmarkBorder,
+                            Image(painter =  if (saveMessageState)  painterResource(
+                                id = R.drawable.ic_baseline_bookmark_24
+                            ) else
+                                painterResource(
+                                id = R.drawable.ic_baseline_bookmark_border_24
+                            ),
+
                                 contentDescription = "",
                                 modifier = Modifier
                                     .wrapContentHeight()
                                     .wrapContentWidth()
                                     .weight(1f)
                                     .clickable {
-                                        //TODO click on save
+                                        saveMessageState = !saveMessageState
+                                            val message = data.convertToEntitySaved(saveMessageState)
+                                           state.message = message
+                                            viewModel.onEvent(MessageEvent.onSaveMessage(message))
+
+
                                     }
 
                             )
@@ -174,14 +191,6 @@ fun MessageItem(data: Messages) {
                                     contentScale = ContentScale.Crop,
                                     // CoilImage, FrescoImage
                                     imageModel = data.image
-                                    // shows a shimmering effect when loading an image.
-                                    /*  shimmerParams = ShimmerParams(
-                                          baseColor = MaterialTheme.colors.background,
-                                          highlightColor = Color.Gray,
-                                          durationMillis = 700,
-                                          dropOff = 0.65f,
-                                          tilt = 20f
-                                      ),*/
                                 )
                             }
                         }
@@ -192,7 +201,8 @@ fun MessageItem(data: Messages) {
                             if (isVisibility && !expandableState) {
                                 Box(
                                     modifier = Modifier
-                                        .size(40.dp)
+                                        .width(48.dp)
+                                        .height(40.dp)
                                         .padding(end = 8.dp)
                                 ) {
                                     Card(shape = RoundedCornerShape(4.dp)) {

@@ -17,10 +17,12 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.TypedArrayUtils.getString
 import com.example.messageappebcom.R
+import com.example.messageappebcom.ui.MainActivity
 import com.example.messageappebcom.util.Resource
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
-fun TopAppBar() {
+fun TopAppBar(mainActivity: MainActivity) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Card(
             modifier = Modifier
@@ -51,7 +53,7 @@ fun TopAppBar() {
 
                     )
                 }
-                TabScreen()
+                TabScreen(mainActivity = mainActivity)
             }
         }
     }

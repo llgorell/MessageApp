@@ -1,14 +1,15 @@
 package com.example.messageappebcom.data.repository
 
+import androidx.lifecycle.LiveData
 import com.example.messageappebcom.data.local.MessageDataBase
+import com.example.messageappebcom.data.local.MessageEntity
 import com.example.messageappebcom.data.mapper.convertToMessages
 import com.example.messageappebcom.data.mapper.toMessageEntity
 import com.example.messageappebcom.data.remote.MessageApi
 import com.example.messageappebcom.domain.model.Messages
 import com.example.messageappebcom.domain.repository.MessageRepository
 import com.example.messageappebcom.util.Resource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -46,4 +47,15 @@ class MessageRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun saveMessage(message: MessageEntity) {
+        dao.updateMessage(message)
+    }
+
+    override  fun getSavedMessage(): LiveData<List<MessageEntity>> {
+        return dao.getSavedMessages()
+
+    }
+
+
 }

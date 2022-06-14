@@ -1,7 +1,8 @@
 package com.example.messageappebcom.data.local
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.messageappebcom.data.remote.dto.MessageDto
+import kotlinx.coroutines.flow.Flow
 
 @Dao
  interface MessageDao {
@@ -12,7 +13,7 @@ import com.example.messageappebcom.data.remote.dto.MessageDto
     @Delete
     suspend fun deleteMessage(message : MessageEntity)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateMessage(message : MessageEntity)
 
     @Query("SELECT * FROM  MessageEntity " +
@@ -25,8 +26,8 @@ import com.example.messageappebcom.data.remote.dto.MessageDto
    /* @Update
     suspend fun savedMessage(saved : Boolean)*/
 
-    @Query("SELECT * FROM MessageEntity WHERE saved = 1 ")
-    suspend fun getSavedMessages() : List<MessageEntity>
+    @Query("SELECT * FROM MessageEntity WHERE saved = 1")
+      fun getSavedMessages() : LiveData<List<MessageEntity>>
 
 
 }

@@ -1,14 +1,10 @@
-package com.example.messageappebcom.presentation.message
+package com.example.messageappebcom.presentation.savedMessage
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import com.example.messageappebcom.data.local.MessageEntity
 import com.example.messageappebcom.domain.model.Messages
 
-data class MessageState (
+data class SavedMessageState (
     val data : List<Messages>? = emptyList(),
     val isLoading : Boolean = false,
     val error : String? = null,
-    var message : MessageEntity? = null
-
-        )
+)

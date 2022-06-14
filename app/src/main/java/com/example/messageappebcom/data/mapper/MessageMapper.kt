@@ -8,31 +8,33 @@ import com.example.messageappebcom.domain.model.Messages
 fun MessagesDto.toMessage() : Messages {
     return Messages(
         description = description,
-        id = id,
+        id_message = id,
         image = image,
         title = title,
-        unread = unread
+        unread = unread,
     )
 }
 fun MessageEntity.convertToMessages() : Messages{
     return Messages(
-        id = id_message,
+        id_message = id_message,
         description = description,
         image = image,
         title = title,
         unread = unread,
-        saved = saved
+        saved = saved,
+        id = id,
     )
 }
 
 fun Messages.toMessageEntity():MessageEntity{
     return MessageEntity(
         description = description,
-        id_message = id,
+        id_message = id_message,
         image = image,
         title = title,
         unread = unread,
-        saved = saved
+        saved = saved,
+        id = id
     )
 }
 fun MessagesDto.toMessageEntity() :MessageEntity {
@@ -42,5 +44,16 @@ fun MessagesDto.toMessageEntity() :MessageEntity {
         image = image,
         title = title,
         unread = unread
+    )
+}
+fun Messages.convertToEntitySaved(saved : Boolean) : MessageEntity{
+    return MessageEntity(
+        description = description,
+        id_message = id_message,
+        id = id,
+        title = title,
+        image = image,
+        unread =  unread,
+        saved = saved
     )
 }
