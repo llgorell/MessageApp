@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.Flow
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateMessage(message : MessageEntity)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateListMessages(list : List<MessageEntity>)
+
     @Query("SELECT * FROM  MessageEntity " +
             "ORDER BY CASE WHEN unread = 0 THEN id_message END ASC")
     suspend fun getListMessage() : List<MessageEntity>
@@ -28,6 +31,9 @@ import kotlinx.coroutines.flow.Flow
 
     @Query("SELECT * FROM MessageEntity WHERE saved = 1")
       fun getSavedMessages() : LiveData<List<MessageEntity>>
+
+    @Query("SELECT * FROM MessageEntity ORDER BY CASE WHEN unread = 0 THEN id_message END ASC")
+    fun getdata() : Flow<List<MessageEntity>>
 
 
 }

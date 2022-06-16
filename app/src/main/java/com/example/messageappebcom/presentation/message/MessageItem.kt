@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.*
@@ -29,32 +28,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.messageappebcom.R
+import com.example.messageappebcom.data.mapper.convertToEntityRead
 import com.example.messageappebcom.data.mapper.convertToEntitySaved
+import com.example.messageappebcom.data.mapper.toMessageEntity
 import com.example.messageappebcom.domain.model.Messages
+import com.example.messageappebcom.ui.spacing
 import com.example.messageappebcom.util.ComponentState
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.glide.GlideImage
-import kotlinx.coroutines.android.awaitFrame
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
+fun MessageItem(
+    data: Messages,
+    isChecked: Boolean ,
+    onClickShare: (Messages) -> Unit,
+    viewModel: MessageViewModel = hiltViewModel()
+) {
     var expandableState by remember { mutableStateOf(false) }
     var state = viewModel.state
     val rotationState by animateFloatAsState(
         targetValue = if (expandableState) 180f else 0f
     )
     var deleteState by remember { mutableStateOf(false) }
-    var saveMessageState by remember{mutableStateOf(data.saved)}
-    var visibaleCheckbox by remember { mutableStateOf(false) }
-    var isVisibility by remember { mutableStateOf(!data.image.isNullOrEmpty()) }
-    var toState by remember { mutableStateOf(ComponentState.Released) }
-    val transition: Transition<ComponentState> = updateTransition(targetState = toState, label = "")
+    var readState by remember { mutableStateOf(false) }
+    var saveMessageState by remember { mutableStateOf(data.saved) }
+    var readMessageState by remember { mutableStateOf(data.unread) }
+    val isVisibilityImage by remember { mutableStateOf(!data.image.isNullOrEmpty()) }
+    var toStateOnpressAnim by remember { mutableStateOf(ComponentState.Released) }
+    val transition: Transition<ComponentState> =
+        updateTransition(targetState = toStateOnpressAnim, label = "")
 
 // Defines a float animation to scale x,y
     val scalex: Float by transition.animateFloat(
@@ -72,30 +77,44 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
 
         )
     }
+
+    //rtl layout
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl)
     {
-        Row(verticalAlignment = CenterVertically) {
+        Row(verticalAlignment = CenterVertically, modifier = Modifier.padding(MaterialTheme.spacing.small)) {
 
             //if press on card
-            if (visibaleCheckbox) {
-                Checkbox(checked = deleteState, onCheckedChange = { deleteState = it })
+            if (isChecked) {
+                Checkbox(
+                    checked = deleteState,
+                    onCheckedChange = { deleteState = it },
+                    modifier = Modifier.wrapContentSize()
+                )
             }
             Box(
                 modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
-                Card(backgroundColor = if (data.unread) Color.White else MaterialTheme.colors.onBackground,
+                Card(backgroundColor = if (readMessageState) Color.White else MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .wrapContentHeight()
+                        .padding(horizontal = MaterialTheme.spacing.medium, vertical = MaterialTheme.spacing.small)
                         .combinedClickable(
                             onLongClick = {
-                                visibaleCheckbox = !visibaleCheckbox
-                                toState = ComponentState.Pressed
+                                val list = viewModel.state.data
+                                list!!.forEach { it.visibaleCheck = !it.visibaleCheck }
+                                state = state.copy(data = list )
+                                viewModel.onEvent(
+                                    MessageEvent.onLongClick(viewModel.state.data!!.map { it.toMessageEntity() })
+                                )
+
+                                toStateOnpressAnim = ComponentState.Pressed
+
 
                             }, onClick = {
-                                toState = ComponentState.Released
-                                visibaleCheckbox = !visibaleCheckbox
+                                toStateOnpressAnim = ComponentState.Released
+
                             }
                         )
                         .fillMaxWidth()
@@ -106,17 +125,18 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                         }
                         .animateContentSize(
                             animationSpec = tween(
-                                delayMillis = 200,
+                                delayMillis = 500,
+                                durationMillis = 1000,
                                 easing = LinearOutSlowInEasing
+
                             )
-                        )
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(12.dp)
+                        ),
+                    shape = RoundedCornerShape(MaterialTheme.spacing.customize)
                 ) {
                     Column {
                         Row(
                             modifier = Modifier
-                                .padding(horizontal = 16.dp, vertical = 13.dp)
+                                .padding(horizontal = MaterialTheme.spacing.medium, vertical = MaterialTheme.spacing.customize)
                                 .fillMaxWidth(),
                             verticalAlignment = CenterVertically
                         ) {
@@ -139,18 +159,18 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                                     .wrapContentWidth()
                                     .weight(1f)
                                     .clickable {
-                                        //TODO click on share
+                                        onClickShare(data)
                                     }
 
                             )
 
 
-                            Image(painter =  if (saveMessageState)  painterResource(
+                            Image(painter = if (saveMessageState) painterResource(
                                 id = R.drawable.ic_baseline_bookmark_24
                             ) else
                                 painterResource(
-                                id = R.drawable.ic_baseline_bookmark_border_24
-                            ),
+                                    id = R.drawable.ic_baseline_bookmark_border_24
+                                ),
 
                                 contentDescription = "",
                                 modifier = Modifier
@@ -159,17 +179,22 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                                     .weight(1f)
                                     .clickable {
                                         saveMessageState = !saveMessageState
-                                            val message = data.convertToEntitySaved(saveMessageState)
-                                           state.message = message
-                                            viewModel.onEvent(MessageEvent.onSaveMessage(message))
+                                        val message = data.convertToEntitySaved(saveMessageState)
 
+                                        state.message = message
+                                        state.data!!.forEach {
+                                            if (it.id_message == data.id_message) {
+                                                it.saved = saveMessageState
+                                            }
+                                        }
+                                        viewModel.onEvent(MessageEvent.onSaveMessage(message))
 
                                     }
 
                             )
 
                         }
-                        Box(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
+                        Box(Modifier.padding(start = MaterialTheme.spacing.medium, end = MaterialTheme.spacing.medium, bottom = MaterialTheme.spacing.small)) {
                             Text(
                                 text = data.title,
                                 color = colorResource(id = R.color.black),
@@ -179,13 +204,13 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
-                        if (expandableState && isVisibility) {
+                        if (expandableState && isVisibilityImage) {
                             Card(
                                 modifier = Modifier
                                     .height(100.dp)
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                                shape = RoundedCornerShape(4.dp)
+                                    .padding(horizontal = MaterialTheme.spacing.medium, MaterialTheme.spacing.small),
+                                shape = RoundedCornerShape(MaterialTheme.spacing.extraSmall)
                             ) {
                                 GlideImage(
                                     contentScale = ContentScale.Crop,
@@ -196,16 +221,16 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                         }
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.medium)
                         ) {
-                            if (isVisibility && !expandableState) {
+                            if (isVisibilityImage && !expandableState) {
                                 Box(
                                     modifier = Modifier
                                         .width(48.dp)
                                         .height(40.dp)
-                                        .padding(end = 8.dp)
+                                        .padding(end = MaterialTheme.spacing.small)
                                 ) {
-                                    Card(shape = RoundedCornerShape(4.dp)) {
+                                    Card(shape = RoundedCornerShape(MaterialTheme.spacing.extraSmall)) {
                                         GlideImage(
                                             contentScale = ContentScale.Crop,
                                             // CoilImage, FrescoImage
@@ -233,11 +258,11 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                         }
                         Divider(
                             thickness = 1.dp, color = colorResource(R.color.divider),
-                            modifier = Modifier.padding(start = 16.dp, end = 56.dp, top = 12.dp)
+                            modifier = Modifier.padding(MaterialTheme.spacing.medium, end = 56.dp, top = MaterialTheme.spacing.customize)
                         )
                         Row(
                             verticalAlignment = CenterVertically,
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
+                            modifier = Modifier.padding(vertical =MaterialTheme.spacing.customize, horizontal = MaterialTheme.spacing.medium)
                         ) {
                             Text(
                                 text = stringResource(id = R.string.expire_message),
@@ -249,7 +274,7 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                                 text = stringResource(id = R.string.time_expires_message),
                                 color = colorResource(id = R.color.font_gray),
                                 style = MaterialTheme.typography.subtitle2,
-                                modifier = Modifier.padding(end = 16.dp)
+                                modifier = Modifier.padding(end = MaterialTheme.spacing.medium)
                             )
 
                             Icon(
@@ -266,6 +291,17 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                                     .alpha(ContentAlpha.medium)
                                     .rotate(rotationState)
                                     .clickable {
+                                        readMessageState = false
+                                        val message = data.convertToEntityRead(readMessageState)
+
+                                        state.message = message
+                                        state.data!!.forEach {
+                                            if (it.id_message == data.id_message) {
+                                                it.unread = readMessageState
+                                            }
+                                        }
+                                        viewModel.onEvent(MessageEvent.onReadMessage(message))
+                                        readState = true
                                         expandableState = !expandableState
                                     }
                             )
@@ -275,5 +311,7 @@ fun MessageItem(data: Messages,viewModel: MessageViewModel= hiltViewModel()) {
                 }
             }
         }
+
     }
+
 }

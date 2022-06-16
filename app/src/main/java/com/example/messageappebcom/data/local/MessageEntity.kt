@@ -12,5 +12,7 @@ import androidx.room.PrimaryKey
     val title: String,
     val unread: Boolean,
     @ColumnInfo(name = "saved")  val saved : Boolean = false,
+    val is_checked: Boolean = false,
+    val visibale_check: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int? = null
          )

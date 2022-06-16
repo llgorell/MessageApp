@@ -20,7 +20,7 @@ fun TabContent(pagerState: PagerState,mainActivity: MainActivity) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         HorizontalPager(state = pagerState, count = 2) { page->
             when (page){
-                0-> { MessageScreen()}
+                0-> { MessageScreen(mainActivity = mainActivity)}
                 1-> { MessageSavedScreen(mainActivity = mainActivity)}
             }
         }

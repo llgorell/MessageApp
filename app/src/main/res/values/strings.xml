@@ -2,6 +2,8 @@
     <string name="app_name">MessageAppEbcom</string>
 
     <string name="my_messages">پیام های من</string>
+    <string name="cancel">انصراف</string>
+    <string name="delete">حذف</string>
     <string name="expire_message">اعتبار پیام</string>
     <string name="time_message">۱۰:۵۰ - ۱۴۰۰/۱۰/۲۴</string>
     <string name="time_expires_message">۱۳:۰۰ - ۱۴۰۰/۱۱/۳۰</string>

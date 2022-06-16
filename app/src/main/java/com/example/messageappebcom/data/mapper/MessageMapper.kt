@@ -23,6 +23,8 @@ fun MessageEntity.convertToMessages() : Messages{
         unread = unread,
         saved = saved,
         id = id,
+        is_checked = is_checked,
+        visibaleCheck = visibale_check
     )
 }
 
@@ -34,7 +36,9 @@ fun Messages.toMessageEntity():MessageEntity{
         title = title,
         unread = unread,
         saved = saved,
-        id = id
+        id = id,
+        is_checked = is_checked,
+        visibale_check = visibaleCheck
     )
 }
 fun MessagesDto.toMessageEntity() :MessageEntity {
@@ -54,6 +58,21 @@ fun Messages.convertToEntitySaved(saved : Boolean) : MessageEntity{
         title = title,
         image = image,
         unread =  unread,
+        is_checked = is_checked,
+        visibale_check = visibaleCheck,
+        saved = saved
+    )
+}
+fun Messages.convertToEntityRead(read : Boolean) : MessageEntity{
+    return MessageEntity(
+        description = description,
+        id_message = id_message,
+        id = id,
+        title = title,
+        image = image,
+        unread =  read,
+        is_checked = is_checked,
+        visibale_check = visibaleCheck,
         saved = saved
     )
 }

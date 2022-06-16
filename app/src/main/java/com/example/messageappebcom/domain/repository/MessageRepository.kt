@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface MessageRepository {
 
     suspend fun getMessages() : Flow<Resource<List<Messages>>>
-    suspend fun saveMessage(message :MessageEntity)
+    suspend fun updateMessage(message :MessageEntity)
+    suspend fun updateListMessage(list :List<MessageEntity>)
      fun getSavedMessage() : LiveData<List<MessageEntity>>
+     fun getdata() : Flow<List<MessageEntity>>
 }

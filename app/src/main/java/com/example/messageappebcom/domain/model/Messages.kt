@@ -6,6 +6,8 @@ data class Messages(
     val id: Int? = null,
     val image: String?="",
     val title: String,
-    val unread: Boolean,
-    val saved : Boolean = false
+    var unread: Boolean,
+    var saved : Boolean = false,
+    var is_checked: Boolean = false,
+    var visibaleCheck: Boolean = false,
 )

@@ -1,20 +1,19 @@
 package com.example.messageappebcom.presentation.message
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.messageappebcom.data.local.MessageEntity
+import com.example.messageappebcom.data.mapper.convertToEntitySaved
 import com.example.messageappebcom.data.mapper.convertToMessages
+import com.example.messageappebcom.data.mapper.toMessageEntity
 import com.example.messageappebcom.domain.model.Messages
 import com.example.messageappebcom.domain.repository.MessageRepository
 import com.example.messageappebcom.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,10 +23,14 @@ class MessageViewModel @Inject constructor(
     private val repository: MessageRepository
 ) : ViewModel() {
     var state by mutableStateOf(MessageState())
-     val savedList = mutableStateOf<List<Messages>>(listOf())
+
+   private var data : MutableLiveData<List<Messages>> = MutableLiveData()
+    var livedata : LiveData<List<Messages>> =data
 
     init {
         getMessages()
+        getdata()
+
     }
 
     private fun getMessages() {
@@ -57,7 +60,13 @@ class MessageViewModel @Inject constructor(
 
     private fun savedMessage(messageEntity: MessageEntity = state.message!!) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.saveMessage(messageEntity)
+            repository.updateMessage(messageEntity)
+        }
+    }
+
+    private fun updateMessage(list : List<MessageEntity> = state.data!!.map { it.toMessageEntity() }){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateListMessage(list)
         }
     }
 
@@ -71,9 +80,34 @@ class MessageViewModel @Inject constructor(
                 }
 
             }
+            is MessageEvent.onLongClick -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                   state = state.copy(data = event.listMessages.map { it.convertToMessages() })
+                    delay(300)
+                    updateMessage()
+
+                }
+        }
+            is MessageEvent.onReadMessage -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    state = state.copy(message = event.messageEntity)
+                    delay(300)
+                    updateMessage()
+                }
+
+            }
         }
     }
     fun getSavedMessage() : LiveData<List<MessageEntity>>{
            return  repository.getSavedMessage()
+    }
+
+    fun getdata (){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getdata().collect { it ->
+
+                data.postValue(it.map { it.convertToMessages() })
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.messageappebcom.ui
 
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,8 +23,11 @@ import dagger.hilt.android.AndroidEntryPoint
         super.onCreate(savedInstanceState)
         setContent {
             MessageAppEbcomTheme {
-                // A surface container using the 'background' color from the theme
-               TopAppBar(this)
+                // A surface container usisurng the 'background' color from the theme
+                Scaffold() {
+                    TopAppBar(this)
+                }
+
             }
         }
     }

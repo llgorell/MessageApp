@@ -48,13 +48,21 @@ class MessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveMessage(message: MessageEntity) {
+    override suspend fun updateMessage(message: MessageEntity) {
         dao.updateMessage(message)
+    }
+
+    override suspend fun updateListMessage(list: List<MessageEntity>) {
+        dao.updateListMessages(list)
     }
 
     override  fun getSavedMessage(): LiveData<List<MessageEntity>> {
         return dao.getSavedMessages()
 
+    }
+
+    override fun getdata(): Flow<List<MessageEntity>> {
+        return dao.getdata()
     }
 
 
