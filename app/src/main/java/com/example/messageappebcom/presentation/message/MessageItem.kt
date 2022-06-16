@@ -43,7 +43,7 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun MessageItem(
     data: Messages,
-    isChecked: Boolean ,
+    isChecked: Boolean,
     onClickShare: (Messages) -> Unit,
     viewModel: MessageViewModel = hiltViewModel()
 ) {
@@ -81,7 +81,10 @@ fun MessageItem(
     //rtl layout
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl)
     {
-        Row(verticalAlignment = CenterVertically, modifier = Modifier.padding(MaterialTheme.spacing.small)) {
+        Row(
+            verticalAlignment = CenterVertically,
+            modifier = Modifier.padding(MaterialTheme.spacing.small)
+        ) {
 
             //if press on card
             if (isChecked) {
@@ -99,12 +102,15 @@ fun MessageItem(
                 Card(backgroundColor = if (readMessageState) Color.White else MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .wrapContentHeight()
-                        .padding(horizontal = MaterialTheme.spacing.medium, vertical = MaterialTheme.spacing.small)
+                        .padding(
+                            horizontal = MaterialTheme.spacing.medium,
+                            vertical = MaterialTheme.spacing.small
+                        )
                         .combinedClickable(
                             onLongClick = {
                                 val list = viewModel.state.data
                                 list!!.forEach { it.visibaleCheck = !it.visibaleCheck }
-                                state = state.copy(data = list )
+                                state = state.copy(data = list)
                                 viewModel.onEvent(
                                     MessageEvent.onLongClick(viewModel.state.data!!.map { it.toMessageEntity() })
                                 )
@@ -136,7 +142,10 @@ fun MessageItem(
                     Column {
                         Row(
                             modifier = Modifier
-                                .padding(horizontal = MaterialTheme.spacing.medium, vertical = MaterialTheme.spacing.customize)
+                                .padding(
+                                    horizontal = MaterialTheme.spacing.medium,
+                                    vertical = MaterialTheme.spacing.customize
+                                )
                                 .fillMaxWidth(),
                             verticalAlignment = CenterVertically
                         ) {
@@ -194,7 +203,13 @@ fun MessageItem(
                             )
 
                         }
-                        Box(Modifier.padding(start = MaterialTheme.spacing.medium, end = MaterialTheme.spacing.medium, bottom = MaterialTheme.spacing.small)) {
+                        Box(
+                            Modifier.padding(
+                                start = MaterialTheme.spacing.medium,
+                                end = MaterialTheme.spacing.medium,
+                                bottom = MaterialTheme.spacing.small
+                            )
+                        ) {
                             Text(
                                 text = data.title,
                                 color = colorResource(id = R.color.black),
@@ -209,7 +224,10 @@ fun MessageItem(
                                 modifier = Modifier
                                     .height(100.dp)
                                     .fillMaxWidth()
-                                    .padding(horizontal = MaterialTheme.spacing.medium, MaterialTheme.spacing.small),
+                                    .padding(
+                                        horizontal = MaterialTheme.spacing.medium,
+                                        MaterialTheme.spacing.small
+                                    ),
                                 shape = RoundedCornerShape(MaterialTheme.spacing.extraSmall)
                             ) {
                                 GlideImage(
@@ -258,11 +276,18 @@ fun MessageItem(
                         }
                         Divider(
                             thickness = 1.dp, color = colorResource(R.color.divider),
-                            modifier = Modifier.padding(MaterialTheme.spacing.medium, end = 56.dp, top = MaterialTheme.spacing.customize)
+                            modifier = Modifier.padding(
+                                MaterialTheme.spacing.medium,
+                                end = 56.dp,
+                                top = MaterialTheme.spacing.customize
+                            )
                         )
                         Row(
                             verticalAlignment = CenterVertically,
-                            modifier = Modifier.padding(vertical =MaterialTheme.spacing.customize, horizontal = MaterialTheme.spacing.medium)
+                            modifier = Modifier.padding(
+                                vertical = MaterialTheme.spacing.customize,
+                                horizontal = MaterialTheme.spacing.medium
+                            )
                         ) {
                             Text(
                                 text = stringResource(id = R.string.expire_message),

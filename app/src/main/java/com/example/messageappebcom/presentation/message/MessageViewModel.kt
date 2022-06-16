@@ -24,8 +24,8 @@ class MessageViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(MessageState())
 
-   private var data : MutableLiveData<List<Messages>> = MutableLiveData()
-    var livedata : LiveData<List<Messages>> =data
+    private var data: MutableLiveData<List<Messages>> = MutableLiveData()
+    var livedata: LiveData<List<Messages>> = data
 
     init {
         getMessages()
@@ -64,7 +64,7 @@ class MessageViewModel @Inject constructor(
         }
     }
 
-    private fun updateMessage(list : List<MessageEntity> = state.data!!.map { it.toMessageEntity() }){
+    private fun updateMessage(list: List<MessageEntity> = state.data!!.map { it.toMessageEntity() }) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateListMessage(list)
         }
@@ -82,12 +82,12 @@ class MessageViewModel @Inject constructor(
             }
             is MessageEvent.onLongClick -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                   state = state.copy(data = event.listMessages.map { it.convertToMessages() })
+                    state = state.copy(data = event.listMessages.map { it.convertToMessages() })
                     delay(300)
                     updateMessage()
 
                 }
-        }
+            }
             is MessageEvent.onReadMessage -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     state = state.copy(message = event.messageEntity)
@@ -98,11 +98,12 @@ class MessageViewModel @Inject constructor(
             }
         }
     }
-    fun getSavedMessage() : LiveData<List<MessageEntity>>{
-           return  repository.getSavedMessage()
+
+    fun getSavedMessage(): LiveData<List<MessageEntity>> {
+        return repository.getSavedMessage()
     }
 
-    fun getdata (){
+    fun getdata() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getdata().collect { it ->
 

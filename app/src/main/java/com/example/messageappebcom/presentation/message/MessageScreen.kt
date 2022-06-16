@@ -31,7 +31,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 fun MessageScreen(
     mainActivity: MainActivity,
     viewmodel: MessageViewModel = hiltViewModel()
-)  {
+) {
 
     var list by remember {
         mutableStateOf(viewmodel.state.data)
@@ -40,13 +40,13 @@ fun MessageScreen(
         mutableStateOf(viewmodel.state)
     }
 
-    val visibaleCheckBox by remember { mutableStateOf(state.data!![0].visibaleCheck)}
+    val visibaleCheckBox by remember { mutableStateOf(state.data!![0].visibaleCheck) }
 
 
     val messageViewModel =
         ViewModelProvider(mainActivity)[MessageViewModel::class.java]
-    messageViewModel.livedata.observe(mainActivity){
-        state =  state.copy(data = it)
+    messageViewModel.livedata.observe(mainActivity) {
+        state = state.copy(data = it)
 
     }
 
@@ -59,9 +59,10 @@ fun MessageScreen(
             .fillMaxSize()
             .background(color = colors.background)
     ) {
-        LazyColumn(modifier = Modifier
-            .weight(1f)
-           ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+        ) {
             items(list!!.size) { index ->
 
                 MessageItem(list!![index], onClickShare = { message ->
@@ -75,48 +76,51 @@ fun MessageScreen(
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     context.startActivity(shareIntent)
 
-                },isChecked = visibaleCheckBox)
+                }, isChecked = visibaleCheckBox)
             }
         }
 
-       if (visibaleCheckBox) {
-           Box() {
-               Row(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
-                   Button(
-                       shape = RoundedCornerShape(8.dp), colors =
-                       ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange)),
-                       onClick = { ComponentState.Released },
-                       modifier = Modifier
-                           .weight(1f)
-                           .padding(end = 4.dp)
-                           .height(40.dp)
-                   ) {
-                       Text(
-                           text = stringResource(id = R.string.cancel),
-                           color = White,
-                           style = MaterialTheme.typography.body1
-                       )
-                   }
+        if (visibaleCheckBox) {
+            Box() {
+                Row(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+                    Button(
+                        shape = RoundedCornerShape(8.dp), colors =
+                        ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.orange)),
+                        onClick = { ComponentState.Released },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 4.dp)
+                            .height(40.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            color = White,
+                            style = MaterialTheme.typography.body1
+                        )
+                    }
 
-                   TextButton(
-                       shape = RoundedCornerShape(8.dp),
-                       border = BorderStroke(width = 1.dp, color = colorResource(id = R.color.orange)),
-                       colors = ButtonDefaults.buttonColors(backgroundColor = Transparent),
-                       onClick = { /*TODO*/ },
-                       modifier = Modifier
-                           .weight(1f)
-                           .padding(start = 4.dp)
-                           .height(40.dp)
-                   ) {
-                       Text(
-                           text = stringResource(id = R.string.delete),
-                           color = colorResource(id = R.color.orange),
-                           style = MaterialTheme.typography.body1
-                       )
+                    TextButton(
+                        shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = colorResource(id = R.color.orange)
+                        ),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Transparent),
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 4.dp)
+                            .height(40.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.delete),
+                            color = colorResource(id = R.color.orange),
+                            style = MaterialTheme.typography.body1
+                        )
 
-                   }
-               }
-           }
-       }
+                    }
+                }
+            }
+        }
     }
 }

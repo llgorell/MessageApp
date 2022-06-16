@@ -14,5 +14,5 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindRepository(repositoryImpl: MessageRepositoryImpl) :MessageRepository
+    abstract fun bindRepository(repositoryImpl: MessageRepositoryImpl): MessageRepository
 }

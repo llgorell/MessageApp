@@ -23,7 +23,7 @@ fun TabScreen(mainActivity: MainActivity) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Column(modifier = Modifier.background(MaterialTheme.colors.primary)) {
             Tabs(pagerState = pagerState)
-            TabContent(pagerState = pagerState,mainActivity)
+            TabContent(pagerState = pagerState, mainActivity)
         }
     }
-    }
+}

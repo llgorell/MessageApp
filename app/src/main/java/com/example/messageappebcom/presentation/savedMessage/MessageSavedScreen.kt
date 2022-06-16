@@ -19,23 +19,25 @@ import com.ramcosta.composedestinations.annotation.Destination
 
 @Composable
 @Destination()
-fun MessageSavedScreen(mainActivity : MainActivity, viewmodel : MessageViewModel = hiltViewModel()) {
+fun MessageSavedScreen(mainActivity: MainActivity, viewmodel: MessageViewModel = hiltViewModel()) {
     var list by remember {
         mutableStateOf<List<Messages>>(listOf())
     }
 
     val messageViewModel =
         ViewModelProvider(mainActivity)[MessageViewModel::class.java]
-    messageViewModel.livedata.observe(mainActivity){
+    messageViewModel.livedata.observe(mainActivity) {
         list = it.filter { it.saved }
     }
 
     val context = LocalContext.current
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .background(color = MaterialTheme.colors.background)){
-        items(list.size){
-            MessageItem(data = list[it], onClickShare = { message->
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background)
+    ) {
+        items(list.size) {
+            MessageItem(data = list[it], onClickShare = { message ->
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND_MULTIPLE
                     putExtra(Intent.EXTRA_STREAM, message.image)

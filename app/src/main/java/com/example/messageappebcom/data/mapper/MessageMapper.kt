@@ -5,7 +5,7 @@ import com.example.messageappebcom.data.remote.dto.MessageDto
 import com.example.messageappebcom.data.remote.dto.MessagesDto
 import com.example.messageappebcom.domain.model.Messages
 
-fun MessagesDto.toMessage() : Messages {
+fun MessagesDto.toMessage(): Messages {
     return Messages(
         description = description,
         id_message = id,
@@ -14,7 +14,8 @@ fun MessagesDto.toMessage() : Messages {
         unread = unread,
     )
 }
-fun MessageEntity.convertToMessages() : Messages{
+
+fun MessageEntity.convertToMessages(): Messages {
     return Messages(
         id_message = id_message,
         description = description,
@@ -28,7 +29,7 @@ fun MessageEntity.convertToMessages() : Messages{
     )
 }
 
-fun Messages.toMessageEntity():MessageEntity{
+fun Messages.toMessageEntity(): MessageEntity {
     return MessageEntity(
         description = description,
         id_message = id_message,
@@ -41,7 +42,8 @@ fun Messages.toMessageEntity():MessageEntity{
         visibale_check = visibaleCheck
     )
 }
-fun MessagesDto.toMessageEntity() :MessageEntity {
+
+fun MessagesDto.toMessageEntity(): MessageEntity {
     return MessageEntity(
         id_message = id,
         description = description,
@@ -50,27 +52,29 @@ fun MessagesDto.toMessageEntity() :MessageEntity {
         unread = unread
     )
 }
-fun Messages.convertToEntitySaved(saved : Boolean) : MessageEntity{
+
+fun Messages.convertToEntitySaved(saved: Boolean): MessageEntity {
     return MessageEntity(
         description = description,
         id_message = id_message,
         id = id,
         title = title,
         image = image,
-        unread =  unread,
+        unread = unread,
         is_checked = is_checked,
         visibale_check = visibaleCheck,
         saved = saved
     )
 }
-fun Messages.convertToEntityRead(read : Boolean) : MessageEntity{
+
+fun Messages.convertToEntityRead(read: Boolean): MessageEntity {
     return MessageEntity(
         description = description,
         id_message = id_message,
         id = id,
         title = title,
         image = image,
-        unread =  read,
+        unread = read,
         is_checked = is_checked,
         visibale_check = visibaleCheck,
         saved = saved

@@ -56,7 +56,7 @@ class MessageRepositoryImpl @Inject constructor(
         dao.updateListMessages(list)
     }
 
-    override  fun getSavedMessage(): LiveData<List<MessageEntity>> {
+    override fun getSavedMessage(): LiveData<List<MessageEntity>> {
         return dao.getSavedMessages()
 
     }

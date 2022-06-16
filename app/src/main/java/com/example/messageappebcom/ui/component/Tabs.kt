@@ -18,19 +18,19 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Tabs(pagerState : PagerState) {
-    val list = listOf("عمومی","ذخیره شده")
+fun Tabs(pagerState: PagerState) {
+    val list = listOf("عمومی", "ذخیره شده")
     val scope = rememberCoroutineScope()
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 
 
         TabRow(selectedTabIndex = pagerState.currentPage,
             backgroundColor = MaterialTheme.colors.primary,
-            contentColor = Color.Black ,   // if selected black else gray
+            contentColor = Color.Black,   // if selected black else gray
 
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
-                    modifier = Modifier.pagerTabIndicatorOffset(pagerState,tabPositions),
+                    modifier = Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
                     height = 4.dp,
                     color = MaterialTheme.colors.primaryVariant
 
@@ -44,8 +44,9 @@ fun Tabs(pagerState : PagerState) {
                 {
                     Tab(
                         text = {
-                            Text(text =
-                            list[index],
+                            Text(
+                                text =
+                                list[index],
                                 color = if (pagerState.currentPage == index) Color.Black else font_gray,
                                 style = MaterialTheme.typography.button,
                                 fontWeight = FontWeight.Bold

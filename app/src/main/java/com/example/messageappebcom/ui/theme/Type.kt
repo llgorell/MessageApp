@@ -29,22 +29,19 @@ val Typography =
             fontFamily = fonts,
             fontSize = 14.sp,
             lineHeight = 23.8.sp
-        )
-        ,
+        ),
         //number style
         subtitle2 = TextStyle(
             fontFamily = fontNum,
             fontSize = 14.sp,
             lineHeight = 18.2.sp
-        )
-        ,
+        ),
         //text top app bar
         h6 = TextStyle(
             fontFamily = fonts,
             fontSize = 20.sp,
             lineHeight = 20.sp
-        )
-        ,
+        ),
         //tab button
         button = TextStyle(
             fontFamily = fonts,

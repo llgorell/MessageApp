@@ -16,12 +16,16 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabContent(pagerState: PagerState,mainActivity: MainActivity) {
+fun TabContent(pagerState: PagerState, mainActivity: MainActivity) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        HorizontalPager(state = pagerState, count = 2) { page->
-            when (page){
-                0-> { MessageScreen(mainActivity = mainActivity)}
-                1-> { MessageSavedScreen(mainActivity = mainActivity)}
+        HorizontalPager(state = pagerState, count = 2) { page ->
+            when (page) {
+                0 -> {
+                    MessageScreen(mainActivity = mainActivity)
+                }
+                1 -> {
+                    MessageSavedScreen(mainActivity = mainActivity)
+                }
             }
         }
     }

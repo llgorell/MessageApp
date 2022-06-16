@@ -48,7 +48,10 @@ fun MessageAppEbcomTheme(
         LightColorPalette
     }
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl , localSpacing  provides Spacing()){
+    CompositionLocalProvider(
+        LocalLayoutDirection provides LayoutDirection.Rtl,
+        localSpacing provides Spacing()
+    ) {
         MaterialTheme(
             colors = colors,
             typography = Typography,

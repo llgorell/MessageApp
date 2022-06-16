@@ -16,11 +16,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object  ApiModule {
+object ApiModule {
 
     @Provides
     @Singleton
-    fun provideMessageApi(): MessageApi{
+    fun provideMessageApi(): MessageApi {
         return Retrofit.Builder()
             .baseUrl(Constants.URL_BASE)
             .addConverterFactory(GsonConverterFactory.create())
@@ -30,12 +30,12 @@ object  ApiModule {
 
     @Provides
     @Singleton
-    fun provideMessageDatabase(app : Application) : MessageDataBase{
+    fun provideMessageDatabase(app: Application): MessageDataBase {
         return Room.databaseBuilder(
             app,
             MessageDataBase::class.java,
             "messagedb.db"
         )
-        .build()
+            .build()
     }
 }
